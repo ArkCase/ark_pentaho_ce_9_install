@@ -126,7 +126,9 @@ USER "${PENTAHO_USER}"
 COPY --from=src --chown="${PENTAHO_USER}:${PENTAHO_USER}" "/install" "/home/${PENTAHO_USER}/app"
 
 # Add 3rd Party Jar files  
-RUN set -x && \
+RUN --mount=type=secret,id=mvn_get_auth \
+    . /run/secrets/mvn_get_auth && \
+    set -x && \
     rm -fv \
         "${PENTAHO_TOMCAT}/lib"/mysql-connector-java-*.jar \
         "${PENTAHO_TOMCAT}/lib"/postgresql-*.jar \
