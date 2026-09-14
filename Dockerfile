@@ -126,7 +126,7 @@ USER "${PENTAHO_USER}"
 COPY --from=src --chown="${PENTAHO_USER}:${PENTAHO_USER}" "/install" "/home/${PENTAHO_USER}/app"
 
 # Add 3rd Party Jar files  
-RUN --mount=type=secret,id=mvn_get_auth \
+RUN --mount=type=secret,id=mvn_get_auth,uid=${PENTAHO_UID},gid=${PENTAHO_GID} \
     . /run/secrets/mvn_get_auth && \
     set -x && \
     rm -fv \
