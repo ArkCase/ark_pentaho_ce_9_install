@@ -32,8 +32,8 @@ ARG ARKCASE_PREAUTH_SPRING="5"
 ARG ARKCASE_PREAUTH_VERSION="1.4.0"
 ARG ARKCASE_PREAUTH_SRC="com.armedia.arkcase.preauth:arkcase-preauth-springsec-v${ARKCASE_PREAUTH_SPRING}:${ARKCASE_PREAUTH_VERSION}:jar:bundled"
 
-ARG NEO4J_PLUGIN_VER="5.0.9"
-ARG NEO4J_PLUGIN_URL="https://github.com/knowbi/knowbi-pentaho-pdi-neo4j-output/releases/download/${NEO4J_PLUGIN_VER}/Neo4JOutput-${NEO4J_PLUGIN_VER}.zip"
+# ARG NEO4J_PLUGIN_VER="5.0.9"
+# ARG NEO4J_PLUGIN_URL="https://github.com/knowbi/knowbi-pentaho-pdi-neo4j-output/releases/download/${NEO4J_PLUGIN_VER}/Neo4JOutput-${NEO4J_PLUGIN_VER}.zip"
 
 ARG BASE_REGISTRY="${PUBLIC_REGISTRY}"
 ARG BASE_REPO="arkcase/base-java"
@@ -80,8 +80,10 @@ ENV PENTAHO_PDI_PLUGINS="${PENTAHO_PDI_HOME}/data-integration/plugins"
 ENV PENTAHO_SERVER="${PENTAHO_HOME}/pentaho-server"
 ENV PENTAHO_TOMCAT="${PENTAHO_SERVER}/tomcat"
 
-ENV PENTAHO_USER="pentaho" \
-    PENTAHO_PDI="pentaho-pdi"
+ENV PENTAHO_USER="pentaho"
+ENV PENTAHO_UID="1998"
+ENV PENTAHO_GROUP="${PENTAHO_USER}"
+ENV PENTAHO_GID="${PENTAHO_UID}"
 
 ARG VER
 ARG JAVA
@@ -100,7 +102,7 @@ ARG POSTGRES_DRIVER_SRC
 ARG ARKCASE_MVN_REPO
 ARG MYSQL_LEGACY_DRIVER_SRC
 ARG ARKCASE_PREAUTH_SRC
-ARG NEO4J_PLUGIN_URL
+# ARG NEO4J_PLUGIN_URL
 
 LABEL ORG="Armedia LLC" \
       APP="Pentaho CE" \
@@ -117,9 +119,10 @@ RUN set-java "${JAVA}" && \
       && \
     apt-get clean && \
     mkdir -p "/home/pentaho" && \
-    useradd --system --user-group "${PENTAHO_USER}" && \
-    chmod -R a+rwX "/home/${PENTAHO_USER}" && \
-    chown -R "${PENTAHO_USER}:" "/home/${PENTAHO_USER}"
+    groupadd --system --gid "${PENTAHO_GID}" "${PENTAHO_GROUP}" && \
+    useradd --system --uid "${PENTAHO_UID}" --gid "${PENTAHO_GID}" --groups "${ACM_GROUP}" --create-home --home-dir "${PENTAHO_HOME}" "${PENTAHO_USER}" && \
+    mkdir -p "${PENTAHO_HOME}/.pentaho" && \
+    chown -R "${PENTAHO_USER}:" "${PENTAHO_HOME}"
 
 USER "${PENTAHO_USER}"
 
@@ -169,9 +172,9 @@ RUN chmod -R 644 "${PENTAHO_TOMCAT}/conf/server.xml" && \
     cp -rf "${MANTLE}/browser"/* "${MANTLE}"
 
 # Add the Neo4j Plugin
-RUN curl -L "${NEO4J_PLUGIN_URL}" -o "${PENTAHO_PDI_PLUGINS}/neo4j.zip" && \
-    unzip -d "${PENTAHO_PDI_PLUGINS}" "${PENTAHO_PDI_PLUGINS}/neo4j.zip" && \
-    rm -fv "${PENTAHO_PDI_PLUGINS}/neo4j.zip"
+# RUN curl -L "${NEO4J_PLUGIN_URL}" -o "${PENTAHO_PDI_PLUGINS}/neo4j.zip" && \
+#     unzip -d "${PENTAHO_PDI_PLUGINS}" "${PENTAHO_PDI_PLUGINS}/neo4j.zip" && \
+#     rm -fv "${PENTAHO_PDI_PLUGINS}/neo4j.zip"
 
 # Copy the Tomcat native APR connector
 ENV NATIVE_LIB="${PENTAHO_TOMCAT}/lib"
