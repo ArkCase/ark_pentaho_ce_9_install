@@ -122,7 +122,9 @@ RUN set-java "${JAVA}" && \
     groupadd --system --gid "${PENTAHO_GID}" "${PENTAHO_GROUP}" && \
     useradd --system --uid "${PENTAHO_UID}" --gid "${PENTAHO_GID}" --groups "${ACM_GROUP}" --create-home --home-dir "${PENTAHO_HOME}" "${PENTAHO_USER}" && \
     mkdir -p "${PENTAHO_HOME}/.pentaho" && \
-    chown -R "${PENTAHO_USER}:" "${PENTAHO_HOME}"
+    chown -R "${PENTAHO_USER}:" "${PENTAHO_HOME}" && \
+    chown -R "${PENTAHO_USER}:${PENTAHO_GROUP}" "${TEMP_DIR}" && \
+    chmod -R u=rwX,g=rX,o= "${TEMP_DIR}"
 
 USER "${PENTAHO_USER}"
 
