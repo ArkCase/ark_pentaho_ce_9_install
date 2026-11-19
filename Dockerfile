@@ -27,9 +27,11 @@ ARG POSTGRES_DRIVER_SRC="org.postgresql:postgresql:${POSTGRES_DRIVER}"
 ARG ARKCASE_MVN_REPO="https://nexus.armedia.com/repository/arkcase"
 ARG MYSQL_LEGACY_DRIVER="1.0.0"
 ARG MYSQL_LEGACY_DRIVER_SRC="com.armedia.mysql:mysql-legacy-driver:${MYSQL_LEGACY_DRIVER}:jar"
-ARG ARKCASE_PREAUTH_SPRING="5"
-ARG ARKCASE_PREAUTH_VERSION="1.4.0"
-ARG ARKCASE_PREAUTH_SRC="com.armedia.arkcase.preauth:arkcase-preauth-springsec-v${ARKCASE_PREAUTH_SPRING}:${ARKCASE_PREAUTH_VERSION}:jar:bundled"
+# It's OK to use "3" here b/c it's IDENTICAL to the code that would be needed for Spring 5 and it
+# should load up and work just fine precisely b/c of the interface compatibility
+ARG ARKCASE_PREAUTH_SPRING="3"
+ARG ARKCASE_PREAUTH_VERSION="1.7.0"
+ARG ARKCASE_PREAUTH_SRC="com.armedia.arkcase.preauth:arkcase-preauth-springsec-v${ARKCASE_PREAUTH_SPRING}:${ARKCASE_PREAUTH_VERSION}:jar"
 
 # ARG NEO4J_PLUGIN_VER="5.0.9"
 # ARG NEO4J_PLUGIN_URL="https://github.com/knowbi/knowbi-pentaho-pdi-neo4j-output/releases/download/${NEO4J_PLUGIN_VER}/Neo4JOutput-${NEO4J_PLUGIN_VER}.zip"
